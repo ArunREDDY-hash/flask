@@ -1,8 +1,11 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9
+# Use Python 3.9 Alpine as base image (smaller and more secure)
+FROM python:3.9-alpine
 
 # Set the working directory in the container
 WORKDIR /app
+
+# Install dependencies required for building Python packages
+RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev
 
 # Copy the current directory contents into the container
 COPY . .
