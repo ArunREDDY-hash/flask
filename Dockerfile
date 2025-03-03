@@ -1,21 +1,19 @@
-# Use a lightweight Python Alpine base image
-FROM python:3.9-alpine
+# Use the official Python image
+FROM python:3.11-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Copy necessary files
-COPY app.py requirements.txt ./
+# Copy requirements.txt and install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy the application and test files
+COPY app.py .
+COPY test_app.py .
 
-# Expose port 5000 for Flask
+# Expose port 5000 for the Flask app
 EXPOSE 5000
 
-# Set environment variables to ensure Flask runs continuously
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
-
-# Run the Flask app continuously
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+# Run test cases and start the Flask app
+CMD pytest test_app.py && python app.py
