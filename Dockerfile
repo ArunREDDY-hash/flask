@@ -1,19 +1,20 @@
-# Use the official Python image
-FROM python:3.11-slim
+# Use an official Python image
+FROM python:3.9-slim
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy requirements.txt and install dependencies
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Copy files
+COPY requirements.txt requirements.txt
 
-# Copy the application and test files
-COPY app.py .
-COPY test_app.py .
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port 5000 for the Flask app
+# Copy the application code
+COPY . .
+
+# Expose port
 EXPOSE 5000
 
-# Run test cases and start the Flask app
-CMD pytest test_app.py && python app.py
+# Run the application
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
